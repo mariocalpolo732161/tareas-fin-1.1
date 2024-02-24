@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolver Ecuaciones y Problemas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 100px);
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button[type="submit"] {
+            width: 100px;
+            padding: 12px;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #soluciones {
+            margin-top: 20px;
+        }
+
+        .grafico {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resolver Ecuaciones y Problemas</h1>
+        <!-- Formulario para ingresar la ecuación -->
+        <form id="formulario">
+            <input type="text" id="ecuacion" name="ecuacion" placeholder="Ingrese la ecuación" required>
+            <button type="submit">Resolver</button>
+        </form>
+        <!-- Contenedor para mostrar las soluciones y los pasos -->
+        <div id="soluciones"></div>
+        <!-- Botones para insertar símbolos -->
+        <div class="teclas">
+            <button class="tecla" onclick="insertarSimbolo('√')">√</button>
+            <button class="tecla" onclick="insertarSimbolo('^')">^</button>
+            <button class="tecla" onclick="insertarSimbolo('+')">+</button>
+            <button class="tecla" onclick="insertarSimbolo('-')">-</button>
+            <button class="tecla" onclick="insertarSimbolo('*')">*</button>
+            <button class="tecla" onclick="insertarSimbolo('/')">/</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nerdamer/0.9.10/nerdamer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nerdamer/0.9.10/Algebra.min.js"></script>
+    <script>
+        // Función para insertar un símbolo en la ecuación en la posición del cursor
+        function insertarSimbolo(simbolo) {
+            var ecuacionInput = document.getElementById('ecuacion');
+            var cursorPos = ecuacionInput.selectionStart;
+            var textBefore = ecuacionInput.value.substring(0, cursorPos);
+            var textAfter = ecuacionInput.value.substring(cursorPos, ecuacionInput.value.length);
+            ecuacionInput.value = textBefore + simbolo + textAfter;
+            ecuacionInput.focus();
+            ecuacionInput.setSelectionRange(cursorPos + 1, cursorPos + 1);
+        }
+
+        // Función para resolver la ecuación
+        function resolverEcuacion(ecuacion) {
+            try {
+                // Resolver la ecuación utilizando nerdamer
+                const solucion = nerdamer.solveEquations(ecuacion);
+                return solucion.toString();
+            } catch (error) {
+                // Si hay un error, devolver el mensaje de error
+                return error.message;
+            }
+        }
+
+        // Manejar el evento de envío del formulario (cuando se hace clic en el botón "Resolver")
+        document.getElementById('formulario').addEventListener('submit', function(event) {
+            // Prevenir el comportamiento predeterminado de envío del formulario
+            event.preventDefault();
+            
+            // Obtener el valor de la ecuación del campo de entrada
+            let ecuacion = document.getElementById('ecuacion').value;
+            
+            // Resolver la ecuación
+            let solucion = resolverEcuacion(ecuacion);
+            
+            // Mostrar la solución en el contenedor de soluciones
+            document.getElementById('soluciones').innerHTML = `<h2>Solución:</h2><p>${solucion}</p>`;
+        });
+    </script>
+</body>
+</html>
